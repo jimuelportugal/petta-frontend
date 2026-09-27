@@ -1,93 +1,153 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #f0f2f5;
+    --foreground: #1e293b;
+    --card: #e5e9f0;
+    --card-foreground: #1e293b;
+    --popover: #e5e9f0;
+    --popover-foreground: #1e293b;
+    --primary: #4f46e5;
+    --primary-foreground: #ffffff;
+    --secondary: #e2e8f0;
+    --secondary-foreground: #334155;
+    --muted: #e2e8f0;
+    --muted-foreground: #64748b;
+    --accent: #dbeafe;
+    --accent-foreground: #1e3a8a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #cbd5e1;
+    --input: #cbd5e1;
+    --ring: #6366f1;
+    --radius: 1.25rem;
+  }
+
+  .dark {
+    --background: #181920;
+    --foreground: #f1f5f9;
+    --card: #22242e;
+    --card-foreground: #f1f5f9;
+    --popover: #22242e;
+    --popover-foreground: #f1f5f9;
+    --primary: #6366f1;
+    --primary-foreground: #ffffff;
+    --secondary: #2b2e3b;
+    --secondary-foreground: #e2e8f0;
+    --muted: #2b2e3b;
+    --muted-foreground: #94a3b8;
+    --accent: #2e344a;
+    --accent-foreground: #bfdbfe;
+    --destructive: #f43f5e;
+    --destructive-foreground: #ffffff;
+    --border: #333748;
+    --input: #333748;
+    --ring: #818cf8;
   }
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
 
-/* Claymorphism Theme Utilities */
-@layer utilities {
-  .clay-card {
-    background-color: var(--card);
-    border-radius: 1.5rem;
-    box-shadow: 
-      8px 8px 16px rgba(0, 0, 0, 0.25),
-      -6px -6px 12px rgba(255, 255, 255, 0.05),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.15),
-      inset -3px -3px 6px rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
+/* Claymorphism Elevation and Inset Shadows */
+.clay-card {
+  background-color: var(--card);
+  border-radius: 1.5rem;
+  box-shadow: 
+    10px 10px 20px rgba(0, 0, 0, 0.08),
+    -10px -10px 20px rgba(255, 255, 255, 0.7),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
 
-  .clay-btn-primary {
-    background: #4f46e5;
-    border-radius: 1rem;
-    box-shadow: 
-      5px 5px 10px rgba(0, 0, 0, 0.3),
-      -3px -3px 8px rgba(255, 255, 255, 0.1),
-      inset 2px 2px 4px rgba(255, 255, 255, 0.3),
-      inset -3px -3px 6px rgba(0, 0, 0, 0.4);
-    transition: all 0.15s ease-in-out;
-  }
+.dark .clay-card {
+  box-shadow: 
+    8px 8px 18px rgba(0, 0, 0, 0.4),
+    -6px -6px 14px rgba(255, 255, 255, 0.03),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
 
-  .clay-btn-primary:active {
-    box-shadow: 
-      2px 2px 4px rgba(0, 0, 0, 0.3),
-      inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-      inset -1px -1px 3px rgba(255, 255, 255, 0.2);
-    transform: scale(0.98);
-  }
+.clay-btn-primary {
+  background: var(--primary);
+  border-radius: 1rem;
+  box-shadow: 
+    5px 5px 12px rgba(79, 70, 229, 0.35),
+    -3px -3px 8px rgba(255, 255, 255, 0.6),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.35),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease-in-out;
+}
 
-  .clay-btn-outline {
-    background: var(--background);
-    border-radius: 1rem;
-    box-shadow: 
-      4px 4px 8px rgba(0, 0, 0, 0.25),
-      -2px -2px 6px rgba(255, 255, 255, 0.05),
-      inset 1px 1px 3px rgba(255, 255, 255, 0.1),
-      inset -2px -2px 4px rgba(0, 0, 0, 0.2);
-    transition: all 0.15s ease-in-out;
-  }
+.clay-btn-primary:active {
+  box-shadow: 
+    2px 2px 5px rgba(79, 70, 229, 0.3),
+    inset 3px 3px 6px rgba(0, 0, 0, 0.35),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.2);
+  transform: scale(0.97);
+}
 
-  .clay-btn-outline:active {
-    box-shadow: 
-      1px 1px 3px rgba(0, 0, 0, 0.3),
-      inset 2px 2px 4px rgba(0, 0, 0, 0.4);
-    transform: scale(0.98);
-  }
+.clay-btn-secondary {
+  background: var(--card);
+  border-radius: 1rem;
+  box-shadow: 
+    5px 5px 10px rgba(0, 0, 0, 0.08),
+    -5px -5px 10px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 3px rgba(255, 255, 255, 0.6),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transition: all 0.15s ease-in-out;
+}
 
-  .clay-badge {
-    border-radius: 9999px;
-    box-shadow: 
-      2px 2px 4px rgba(0, 0, 0, 0.25),
-      inset 1px 1px 2px rgba(255, 255, 255, 0.2),
-      inset -1px -1px 2px rgba(0, 0, 0, 0.3);
-  }
+.dark .clay-btn-secondary {
+  box-shadow: 
+    5px 5px 10px rgba(0, 0, 0, 0.35),
+    -3px -3px 8px rgba(255, 255, 255, 0.04),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.12),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
 
-  .clay-input {
-    border-radius: 0.85rem;
-    background: rgba(0, 0, 0, 0.15);
-    box-shadow: 
-      inset 2px 2px 5px rgba(0, 0, 0, 0.4),
-      inset -2px -2px 5px rgba(255, 255, 255, 0.05);
-  }
+.clay-btn-secondary:active {
+  box-shadow: 
+    2px 2px 4px rgba(0, 0, 0, 0.1),
+    inset 2px 2px 5px rgba(0, 0, 0, 0.15);
+  transform: scale(0.97);
+}
+
+.clay-badge {
+  border-radius: 9999px;
+  box-shadow: 
+    3px 3px 6px rgba(0, 0, 0, 0.06),
+    -2px -2px 5px rgba(255, 255, 255, 0.7),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dark .clay-badge {
+  box-shadow: 
+    3px 3px 6px rgba(0, 0, 0, 0.3),
+    -2px -2px 5px rgba(255, 255, 255, 0.03),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.15),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.clay-input {
+  border-radius: 1rem;
+  background: var(--background);
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.08),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.7);
+}
+
+.dark .clay-input {
+  box-shadow: 
+    inset 3px 3px 6px rgba(0, 0, 0, 0.35),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.03);
 }
