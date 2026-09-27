@@ -1,4 +1,3 @@
-// app/(owner)/appointments/book/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -6,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
 import { api } from '@/lib/api';
 import { Pet, Clinic } from '@/types';
 import { appointmentBookingSchema, AppointmentBookingFormValues } from '@/lib/validations';
@@ -14,12 +14,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Search, Clock, Calendar, CheckCircle2 } from 'lucide-react';
+import { DatePickerTime, ClinicSlotItem } from '@/components/date-picker-time';
+import { Search } from 'lucide-react';
 
 export default function BookAppointmentPage() {
   const router = useRouter();
   const [cityFilter, setCityFilter] = useState('');
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [selectedDateObj, setSelectedDateObj] = useState<Date | undefined>(undefined);
 
   const form = useForm<AppointmentBookingFormValues>({
     resolver: zodResolver(appointmentBookingSchema),
@@ -33,7 +35,7 @@ export default function BookAppointmentPage() {
   });
 
   const selectedClinicId = form.watch('clinic_id');
-  const selectedDate = form.watch('date');
+  const selectedDateStr = form.watch('date');
 
   const { data: pets } = useQuery<Pet[]>({
     queryKey: ['my-pets'],
@@ -51,16 +53,21 @@ export default function BookAppointmentPage() {
     },
   });
 
-  const { data: availableSlots, isLoading: slotsLoading } = useQuery<string[]>({
-    queryKey: ['available-slots', selectedClinicId, selectedDate],
+  // Query clinic schedules and existing appointments to determine available vs taken slots
+  const { data: slotList = [], isLoading: slotsLoading } = useQuery<ClinicSlotItem[]>({
+    queryKey: ['clinic-slots', selectedClinicId, selectedDateStr],
     queryFn: async () => {
-      if (!selectedClinicId || !selectedDate) return [];
+      if (!selectedClinicId || !selectedDateStr) return [];
       const res = await api.get(`/clinics/${selectedClinicId}/available-slots`, {
-        params: { date: selectedDate },
+        params: { date: selectedDateStr },
       });
+      // Accepts raw slots (e.g. [{ slot: "09:00", available: true }]) or strings (["09:00"])
+      if (Array.isArray(res.data) && typeof res.data[0] === 'string') {
+        return res.data.map((s: string) => ({ slot: s, available: true }));
+      }
       return res.data;
     },
-    enabled: !!selectedClinicId && !!selectedDate,
+    enabled: !!selectedClinicId && !!selectedDateStr,
   });
 
   const bookingMutation = useMutation({
@@ -101,7 +108,6 @@ export default function BookAppointmentPage() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Step 1: Pet Selection */}
           {step === 1 && (
             <Card>
               <CardHeader>
@@ -147,7 +153,6 @@ export default function BookAppointmentPage() {
             </Card>
           )}
 
-          {/* Step 2: Clinic & Service Selection */}
           {step === 2 && (
             <Card>
               <CardHeader>
@@ -174,6 +179,9 @@ export default function BookAppointmentPage() {
                         onValueChange={(val) => {
                           field.onChange(Number(val));
                           form.setValue('service_type', '');
+                          form.setValue('date', '');
+                          form.setValue('time_slot', '');
+                          setSelectedDateObj(undefined);
                         }}
                         defaultValue={field.value ? String(field.value) : undefined}
                       >
@@ -239,66 +247,34 @@ export default function BookAppointmentPage() {
             </Card>
           )}
 
-          {/* Step 3: Date & Slot Capacity Allocation */}
           {step === 3 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Step 3: Pick Date & Reserved Slot</CardTitle>
+                <CardTitle className="text-lg">Step 3: Select Date & Time</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="date"
-                          min={new Date().toISOString().split('T')[0]}
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e);
-                            form.setValue('time_slot', '');
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+              <CardContent className="space-y-6">
+                <DatePickerTime
+                  selectedDate={selectedDateObj}
+                  onDateChange={(d) => {
+                    setSelectedDateObj(d);
+                    form.setValue('date', d ? format(d, 'yyyy-MM-dd') : '');
+                    form.setValue('time_slot', '');
+                  }}
+                  selectedTime={form.watch('time_slot')}
+                  onTimeChange={(t) => form.setValue('time_slot', t)}
+                  slots={slotList}
+                  isLoadingSlots={slotsLoading}
                 />
 
-                {selectedDate && (
-                  <FormField
-                    control={form.control}
-                    name="time_slot"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Available Hourly Time Slot</FormLabel>
-                        {slotsLoading ? (
-                          <p className="text-xs text-muted-foreground">Checking clinic slot capacity...</p>
-                        ) : availableSlots && availableSlots.length > 0 ? (
-                          <div className="grid grid-cols-3 gap-2">
-                            {availableSlots.map((slot) => (
-                              <Button
-                                key={slot}
-                                type="button"
-                                variant={field.value === slot ? 'default' : 'outline'}
-                                className="text-xs"
-                                onClick={() => field.onChange(slot)}
-                              >
-                                <Clock className="h-3.5 w-3.5 mr-1" />
-                                {slot}
-                              </Button>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-destructive">No slots available for this date due to capacity limits.</p>
-                        )}
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                {form.formState.errors.date && (
+                  <p className="text-xs text-destructive text-center">
+                    {form.formState.errors.date.message}
+                  </p>
+                )}
+                {form.formState.errors.time_slot && (
+                  <p className="text-xs text-destructive text-center">
+                    {form.formState.errors.time_slot.message}
+                  </p>
                 )}
 
                 <div className="flex gap-2 pt-2">
@@ -310,7 +286,7 @@ export default function BookAppointmentPage() {
                     className="w-1/2"
                     disabled={bookingMutation.isPending || !form.watch('time_slot')}
                   >
-                    {bookingMutation.isPending ? 'Confirming...' : 'Submit Booking'}
+                    {bookingMutation.isPending ? 'Confirming...' : 'Confirm Appointment'}
                   </Button>
                 </div>
               </CardContent>

@@ -1,4 +1,3 @@
-// lib/api.ts
 import { Pet, HealthRecord, Clinic, Schedule, Appointment } from '@/types';
 
 const INITIAL_CLINICS: Clinic[] = [
