@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/lib/api';
 import { Pet } from '@/types';
 import { petSchema, PetFormValues } from '@/lib/validations';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -36,8 +36,8 @@ export default function MyPetsPage() {
 
   const { data: pets, isLoading } = useQuery<Pet[]>({
     queryKey: ['my-pets'],
-    queryFn: async () => {
-      const res = await api.get('/pets');
+    queryFn: async (): Promise<Pet[]> => {
+      const res = await api.get<Pet[]>('/pets');
       return res.data;
     },
   });
@@ -70,17 +70,18 @@ export default function MyPetsPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-8">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-800">My Pets</h1>
-          <p className="text-sm font-medium text-slate-500 mt-0.5">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">My Pets</h1>
+          <p className="text-sm font-semibold text-slate-600 mt-1">
             Manage your registered companions and view their medical ledgers.
           </p>
         </div>
 
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
           <DialogTrigger asChild>
-            <Button className="clay-btn-primary gap-2 h-11 px-5">
+            <Button className="clay-btn-primary gap-2 h-11 px-6 text-sm">
               <Plus className="h-5 w-5" /> Register Pet
             </Button>
           </DialogTrigger>
@@ -99,7 +100,7 @@ export default function MyPetsPage() {
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Pet Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. Milo" className="clay-input" {...field} />
+                        <Input placeholder="e.g. Milo" className="clay-tray border-none h-11 px-4" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -114,7 +115,7 @@ export default function MyPetsPage() {
                       <FormItem>
                         <FormLabel className="font-bold text-slate-700">Species</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g. Canine" className="clay-input" {...field} />
+                          <Input placeholder="e.g. Canine" className="clay-tray border-none h-11 px-4" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -128,7 +129,7 @@ export default function MyPetsPage() {
                       <FormItem>
                         <FormLabel className="font-bold text-slate-700">Breed</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g. Golden Retriever" className="clay-input" {...field} />
+                          <Input placeholder="e.g. Golden Retriever" className="clay-tray border-none h-11 px-4" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -143,7 +144,7 @@ export default function MyPetsPage() {
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Date of Birth</FormLabel>
                       <FormControl>
-                        <Input type="date" className="clay-input" {...field} />
+                        <Input type="date" className="clay-tray border-none h-11 px-4" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,7 +158,7 @@ export default function MyPetsPage() {
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Microchip ID (Optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. 985141001234567" className="clay-input" {...field} />
+                        <Input placeholder="e.g. 985141001234567" className="clay-tray border-none h-11 px-4" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -178,67 +179,69 @@ export default function MyPetsPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-16 text-sm font-semibold text-slate-400">
+        <div className="text-center py-16 text-sm font-bold text-slate-500">
           Loading pets...
         </div>
       ) : pets && pets.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2">
           {pets.map((pet) => (
-            <Card key={pet.pet_id} className="clay-card p-6 flex flex-col justify-between">
+            <div key={pet.pet_id} className="clay-card p-6 flex flex-col justify-between space-y-5">
               <div className="space-y-4">
+                {/* Title & Badge */}
                 <div className="flex justify-between items-start">
                   <div className="space-y-1">
-                    <CardTitle className="text-xl font-black text-slate-800 flex items-center gap-2">
-                      <div className="p-1.5 rounded-xl bg-indigo-100 text-indigo-600">
-                        <Heart className="h-4 w-4 fill-indigo-600" />
+                    <CardTitle className="text-xl font-black text-slate-900 flex items-center gap-2">
+                      <div className="p-1.5 rounded-xl bg-indigo-500 text-white shadow-sm">
+                        <Heart className="h-4 w-4 fill-white" />
                       </div>
                       {pet.name}
                     </CardTitle>
-                    <p className="text-xs font-semibold text-slate-500">
+                    <p className="text-xs font-bold text-slate-500">
                       {pet.species} • {pet.breed}
                     </p>
                   </div>
-                  <Badge variant="outline" className="clay-badge text-xs px-3 py-1">
+                  <Badge className="clay-badge text-xs px-3 py-1 font-bold">
                     ID #{pet.pet_id}
                   </Badge>
                 </div>
 
-                <div className="space-y-2 text-xs font-medium text-slate-600 bg-slate-100/60 p-3.5 rounded-2xl border border-white/60">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-indigo-500" />
-                    <span>DOB: <strong>{pet.date_of_birth}</strong></span>
+                {/* Recessed Inset Clay Tray */}
+                <div className="clay-tray p-4 space-y-2 text-xs font-semibold text-slate-700">
+                  <div className="flex items-center gap-2.5">
+                    <Calendar className="h-4 w-4 text-indigo-600 shrink-0" />
+                    <span>DOB: <strong className="text-slate-900">{pet.date_of_birth}</strong></span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Hash className="h-4 w-4 text-indigo-500" />
-                    <span>Microchip: <strong>{pet.microchip_id || 'Not registered'}</strong></span>
+                  <div className="flex items-center gap-2.5">
+                    <Hash className="h-4 w-4 text-indigo-600 shrink-0" />
+                    <span>Microchip: <strong className="text-slate-900">{pet.microchip_id || 'Not registered'}</strong></span>
                   </div>
                 </div>
               </div>
 
-              {/* Inset Clay Groove Divider */}
-              <div className="pt-5 mt-4 border-t border-slate-200/80">
+              {/* Solid Clay Action Button */}
+              <div className="pt-2">
                 <Link href={`/pets/${pet.pet_id}/history`} className="block">
-                  <Button variant="outline" className="w-full clay-btn-secondary h-11 gap-2">
-                    View Health Passport <ArrowRight className="h-4 w-4" />
+                  <Button className="w-full clay-btn-primary h-12 gap-2 text-sm font-extrabold tracking-wide">
+                    View Health Passport <ArrowRight className="h-4 w-4 stroke-[2.5]" />
                   </Button>
                 </Link>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       ) : (
         <Card className="clay-card text-center py-16 p-6">
           <CardContent className="space-y-4">
-            <div className="w-16 h-16 mx-auto rounded-3xl bg-indigo-100 flex items-center justify-center text-indigo-600 shadow-inner">
+            <div className="w-16 h-16 mx-auto rounded-3xl bg-indigo-500 text-white flex items-center justify-center shadow-lg">
               <Heart className="h-8 w-8" />
             </div>
             <div className="space-y-1">
-              <p className="text-base font-bold text-slate-800">No pets registered yet</p>
-              <p className="text-xs font-medium text-slate-500">
+              <p className="text-lg font-extrabold text-slate-900">No pets registered yet</p>
+              <p className="text-xs font-bold text-slate-500">
                 Add your pet to start tracking vaccinations, deworming, and appointments.
               </p>
             </div>
-            <Button className="clay-btn-primary" onClick={() => setIsModalOpen(true)}>
+            <Button className="clay-btn-primary px-6" onClick={() => setIsModalOpen(true)}>
               <Plus className="h-4 w-4 mr-1.5" /> Add Your First Pet
             </Button>
           </CardContent>

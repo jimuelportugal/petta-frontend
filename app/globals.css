@@ -2,26 +2,27 @@
 
 @layer base {
   :root {
-    /* Rich soft canvas for depth contrast */
-    --background: #e2e8f0;
+    /* Grounded matte clay desk background */
+    --background: #d8e0ea;
     --foreground: #1e293b;
-    --card: #f8fafc;
+    /* Clean eggshell clay slabs */
+    --card: #f1f5f9;
     --card-foreground: #0f172a;
-    --popover: #f8fafc;
+    --popover: #f1f5f9;
     --popover-foreground: #0f172a;
     --primary: #4f46e5;
     --primary-foreground: #ffffff;
-    --secondary: #e0e7ff;
-    --secondary-foreground: #3730a3;
+    --secondary: #6366f1;
+    --secondary-foreground: #ffffff;
     --muted: #cbd5e1;
-    --muted-foreground: #64748b;
-    --accent: #dbeafe;
-    --accent-foreground: #1e3a8a;
-    --destructive: #f43f5e;
+    --muted-foreground: #475569;
+    --accent: #4338ca;
+    --accent-foreground: #ffffff;
+    --destructive: #ef4444;
     --destructive-foreground: #ffffff;
     --border: transparent;
     --input: #cbd5e1;
-    --ring: #6366f1;
+    --ring: #4f46e5;
     --radius: 1.5rem;
   }
 }
@@ -32,97 +33,79 @@ body {
   min-height: 100vh;
 }
 
-/* Clay Card - Inflated 3D Surface */
+/* Clay Slab (Card) */
 .clay-card {
-  background: #f8fafc;
+  background-color: #f8fafc;
   border-radius: 1.75rem;
   box-shadow: 
-    14px 14px 28px #c8d1de,
-    -14px -14px 28px #ffffff,
+    12px 14px 24px rgba(100, 116, 139, 0.4),
+    -8px -8px 16px rgba(255, 255, 255, 0.9),
     inset 2px 2px 4px rgba(255, 255, 255, 0.9),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    inset -3px -3px 6px rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
-/* Clay Primary Button (Vibrant Indigo Pill) */
+/* Solid Purple/Indigo Clay Pill Button */
 .clay-btn-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  background: #4f46e5 !important;
   color: #ffffff !important;
-  border-radius: 1.25rem !important;
-  border: none !important;
+  border-radius: 1.25rem;
   box-shadow: 
-    6px 6px 14px rgba(79, 70, 229, 0.35),
-    -4px -4px 10px rgba(255, 255, 255, 0.8),
-    inset 2px 2px 3px rgba(255, 255, 255, 0.4),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.25);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.clay-btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 
-    8px 8px 18px rgba(79, 70, 229, 0.45),
-    -4px -4px 10px rgba(255, 255, 255, 0.9),
-    inset 2px 2px 4px rgba(255, 255, 255, 0.5),
-    inset -2px -2px 4px rgba(0, 0, 0, 0.3);
+    6px 8px 16px rgba(79, 70, 229, 0.45),
+    -3px -3px 8px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.35),
+    inset -3px -3px 6px rgba(30, 27, 75, 0.45);
+  border: none;
+  transition: all 0.12s ease-in-out;
 }
 
 .clay-btn-primary:active {
+  box-shadow: 
+    2px 3px 6px rgba(79, 70, 229, 0.35),
+    inset 3px 3px 6px rgba(30, 27, 75, 0.6),
+    inset -1px -1px 3px rgba(255, 255, 255, 0.2);
   transform: translateY(1px) scale(0.98);
-  box-shadow: 
-    2px 2px 6px rgba(79, 70, 229, 0.3),
-    inset 3px 3px 6px rgba(0, 0, 0, 0.35),
-    inset -1px -1px 2px rgba(255, 255, 255, 0.2);
 }
 
-/* Clay Secondary / Action Button (Subtle Tinted Clay with Colored Text) */
+/* Secondary Colored Clay Button (Teal / Slate / Vibrant contrast) */
 .clay-btn-secondary {
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%) !important;
-  color: #4338ca !important;
-  font-weight: 700 !important;
-  border-radius: 1.25rem !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-radius: 1.25rem;
   box-shadow: 
-    5px 5px 12px #cdd6e4,
-    -5px -5px 12px #ffffff,
-    inset 2px 2px 3px rgba(255, 255, 255, 0.8),
-    inset -2px -2px 4px rgba(67, 56, 202, 0.12);
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.clay-btn-secondary:hover {
-  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%) !important;
-  color: #3730a3 !important;
-  transform: translateY(-1px);
+    6px 8px 16px rgba(2, 132, 199, 0.4),
+    -3px -3px 8px rgba(255, 255, 255, 0.7),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.35),
+    inset -3px -3px 6px rgba(12, 74, 110, 0.45);
+  border: none;
+  transition: all 0.12s ease-in-out;
 }
 
 .clay-btn-secondary:active {
+  box-shadow: 
+    2px 3px 6px rgba(2, 132, 199, 0.3),
+    inset 3px 3px 6px rgba(12, 74, 110, 0.6);
   transform: translateY(1px) scale(0.98);
-  box-shadow: 
-    2px 2px 6px #cdd6e4,
-    inset 2px 2px 5px rgba(67, 56, 202, 0.2);
 }
 
-/* Clay Badge / Pill (ID #101, Status chips) */
+/* Recessed Inset Tray (Info boxes) */
+.clay-tray {
+  background: #e2e8f0;
+  border-radius: 1.25rem;
+  box-shadow: 
+    inset 4px 4px 8px rgba(148, 163, 184, 0.5),
+    inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+}
+
+/* Clay Pill Badges */
 .clay-badge {
-  background: #eef2ff !important;
-  color: #4338ca !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  border-radius: 9999px !important;
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-radius: 9999px;
   box-shadow: 
-    3px 3px 6px #cdd6e4,
-    -3px -3px 6px #ffffff,
-    inset 1px 1px 2px rgba(255, 255, 255, 0.9),
-    inset -1px -1px 2px rgba(67, 56, 202, 0.1);
-  font-weight: 700 !important;
-}
-
-/* Clay Recessed Inputs */
-.clay-input {
-  border-radius: 1rem !important;
-  background: #eaeff6 !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 
-    inset 3px 3px 6px #c8d1de,
-    inset -3px -3px 6px #ffffff !important;
+    3px 3px 6px rgba(148, 163, 184, 0.4),
+    -2px -2px 5px rgba(255, 255, 255, 0.9),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8),
+    inset -1px -1px 2px rgba(55, 48, 163, 0.2);
+  border: none;
 }
